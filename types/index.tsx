@@ -1,21 +1,29 @@
 import { Dispatch, SetStateAction } from "react";
 
-
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
+export interface Review {
+    rating: number;
+    comment: string;
+    reviewerName: string;
 }
 
-// export interface GroupedProduct {
-//   id: number;
-//   title: string;
-//   price: number;
-//   quantity: number;
-//   totalPrice: number;
-// }
+export interface Product {
+    id: number;
+    title: string;
+    description: string;
+    category: string;
+    price: number;
+    tags: string[];
+    reviews: Review[];
+    images: string[];
+    thumbnail: string;
+    rating: number;
+}
 
 export interface CartContextType {
-  cartProducts: Product[];
-  setCartProducts: Dispatch<SetStateAction<Product[]>>;
+    cartProducts: Product[];
+    setCartProducts: Dispatch<SetStateAction<Product[]>>;
+    handleCartAdd: (product: Product) => void;
+    handleCartRemove: (product: Product) => void;
+    handleClearCart: () => void;
+    cartGrandTotal: number;
 }

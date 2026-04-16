@@ -2,10 +2,18 @@ import Link from "next/link";
 
 export default function HeaderNav() {
     return (
-        <div className="flex gap-6 py-4">
-            <Link href="/" className="hover:underline">Home</Link>
-            <Link href="/products" className="hover:underline">All Products</Link>
-            <Link href="/cart" className="hover:underline">Cart</Link>
-        </div>
-    )
+        <nav className="flex items-center gap-3 text-sm font-medium">
+            <Link href="/" className="px-4 py-2 rounded-full hover:bg-white hover:text-slate-900 transition">
+                Home
+            </Link>
+
+            <Link href="/products" className="px-4 py-2 rounded-full hover:bg-white hover:text-slate-900 transition">
+                Products
+            </Link>
+
+            <Link href="/cart" className="px-4 py-2 rounded-full bg-orange-500 hover:bg-orange-400 transition">
+                Cart
+            </Link>
+        </nav>
+    );
 }

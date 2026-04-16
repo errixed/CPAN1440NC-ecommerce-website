@@ -1,52 +1,116 @@
 import { useRouter } from "next/router";
-import { products } from "@/components/Products";
-import { useEffect } from "react";
-// import { Product } from "@/types";
+import { useEffect, useState } from "react";
+import { Product } from "@/types";
+import axios from "axios";
+import ProductImages from "@/components/products/details/ProductImages";
+import ProductReviews from "@/components/products/details/ProductReviews";
+import ProductTags from "@/components/products/details/ProductTags";
 
 export default function ProductDetailsPage() {
   const router = useRouter();
-  // const productId = router.query.id;
+  const { id } = router.query;
 
-  // const [foundProduct, setFoundProduct] = useState<Product | undefined | null>(
-  //   products.find((product) => product.id === Number(productId)),
-  // );
-
-  const productId = Number(router.query.id);
-  const foundProduct = products.find((product) => product.id === productId);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      if (foundProduct) document.title = foundProduct?.title;
-      else document.title = "Product not found";
-    },
-    [foundProduct],
-  );
+    if (!id) return;
 
-return foundProduct ? (
-  <div className="max-w-2xl mx-auto border rounded-xl p-6 shadow-sm space-y-4">
-    <h1 className="text-2xl font-bold">Product Details</h1>
-    <div className="space-y-2">
-      <p>
-        <span className="font-semibold">ID:</span> {foundProduct.id}
-      </p>
-      <p>
-        <span className="font-semibold">Title:</span> {foundProduct.title}
-      </p>
-      <p>
-        <span className="font-semibold">Price:</span> ${foundProduct.price.toFixed(2)}
-      </p>
+    axios.get(`/api/products/${id}`)
+      .then((response) => {
+        setProduct(response.data);
+      })
+      .catch(() => {
+        setProduct(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    if (product) {
+      document.title = product.title;
+    } else {
+      document.title = "Product not found";
+    }
+  }, [product]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-slate-600">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-slate-600">
+        Product not found
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-slate-100 min-h-screen">
+      <div className="max-w-7xl mx-auto px-8 py-12 space-y-8">
+        <section className="bg-white rounded-3xl shadow-lg p-8 space-y-6">
+          <div className="space-y-3">
+            <p className="text-orange-500 font-semibold text-sm uppercase tracking-wider">
+              Product Details
+            </p>
+
+            <h1 className="text-4xl font-bold text-slate-900">
+              {product.title}
+            </h1>
+
+            <p className="text-slate-600 leading-7 max-w-3xl">
+              {product.description}
+            </p>
+          </div>
+
+         <div className="flex flex-col gap-4">
+  <div>
+    <p className="text-xs uppercase tracking-widest text-slate-500">
+      Price
+    </p>
+    <p className="text-3xl font-semibold text-orange-500">
+      ${product.price.toFixed(2)}
+    </p>
+  </div>
+
+  <div className="flex flex-col gap-2">
+    <p className="text-xs uppercase tracking-widest text-slate-500">
+      Category
+    </p>
+
+    <span className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 capitalize w-fit">
+      {product.category}
+    </span>
+  </div>
+
+  <ProductTags tags={product.tags} />
+</div>
+        </section>
+
+        <section className="bg-white rounded-3xl shadow-lg p-8">
+          <ProductImages images={product.images} title={product.title} />
+        </section>
+
+        <section className="bg-white rounded-3xl shadow-lg p-8">
+          <ProductReviews reviews={product.reviews} />
+        </section>
+
+        <div>
+          <button
+            onClick={() => router.back()}
+            className="bg-slate-900 text-white px-6 py-3 rounded-full hover:bg-slate-700 transition"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
     </div>
-
-    <button onClick={() => router.back()} className="border rounded px-4 py-2 hover:bg-black hover:text-white transition">
-      Go Back
-    </button>
-  </div>
-) : (
-  <div className="max-w-xl mx-auto border rounded-xl p-6 text-center shadow-sm">
-    <h1 className="text-xl font-bold mb-2">Product not found</h1>
-
-    <button onClick={() => router.back()} className="border rounded px-4 py-2 hover:bg-black hover:text-white transition">
-      Back to Products
-    </button>
-  </div>
-);
+  );
 }

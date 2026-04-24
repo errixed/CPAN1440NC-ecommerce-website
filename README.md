@@ -1,8 +1,8 @@
 # CPAN1440NC Ecommerce Website
 
-A simple ecommerce website built with Next.js, React, TypeScript, Tailwind CSS, and DummyJSON.
+Live Demo: https://cpan1440nc.errixed.com
 
-## Features
+A simple ecommerce website built with Next.js, React, TypeScript, Tailwind CSS, and DummyJSON.
 
 * Home page with featured products and categories
 * Products page with search and category filters

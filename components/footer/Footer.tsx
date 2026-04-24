@@ -30,7 +30,7 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-slate-700 mt-10 pt-6 text-center text-sm text-gray-400">
-                    &copy; 2026 Seyedamirhossein Shekarabi & Dylan Daniel Penner Low. Designed for a modern shopping experience.
+                    &copy; 2026 Seyedamirhossein Shekarabi. Designed for a modern shopping experience.
                 </div>
             </div>
         </footer>

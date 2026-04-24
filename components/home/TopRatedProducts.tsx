@@ -38,7 +38,7 @@ export default function TopRatedProducts({
 
       <div className="flex gap-6 overflow-x-auto pb-2">
         {topRatedProducts.map((product) => (
-          <div key={product.id} className="min-w-[250px] shrink-0">
+          <div key={product.id} className="min-w-[250px] max-w-[250px] shrink-0">
             <ProductCard
               product={product}
               handleCartAdd={handleCartAdd}

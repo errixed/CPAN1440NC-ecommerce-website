@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Product } from "@/types";
 import axios from "axios";
 import ProductImages from "@/components/products/details/ProductImages";
-import ProductReviews from "@/components/products/details/ProductReviews";
 import ProductTags from "@/components/products/details/ProductTags";
+const ProductReviews = lazy(() => import("@/components/products/details/ProductReviews"))
 
 export default function ProductDetailsPage() {
   const router = useRouter();
@@ -70,28 +70,28 @@ export default function ProductDetailsPage() {
             </p>
           </div>
 
-         <div className="flex flex-col gap-4">
-  <div>
-    <p className="text-xs uppercase tracking-widest text-slate-500">
-      Price
-    </p>
-    <p className="text-3xl font-semibold text-orange-500">
-      ${product.price.toFixed(2)}
-    </p>
-  </div>
+          <div className="flex flex-col gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-slate-500">
+                Price
+              </p>
+              <p className="text-3xl font-semibold text-orange-500">
+                ${product.price.toFixed(2)}
+              </p>
+            </div>
 
-  <div className="flex flex-col gap-2">
-    <p className="text-xs uppercase tracking-widest text-slate-500">
-      Category
-    </p>
+            <div className="flex flex-col gap-2">
+              <p className="text-xs uppercase tracking-widest text-slate-500">
+                Category
+              </p>
 
-    <span className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 capitalize w-fit">
-      {product.category}
-    </span>
-  </div>
+              <span className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 capitalize w-fit">
+                {product.category}
+              </span>
+            </div>
 
-  <ProductTags tags={product.tags} />
-</div>
+            <ProductTags tags={product.tags} />
+          </div>
         </section>
 
         <section className="bg-white rounded-3xl shadow-lg p-8">
@@ -99,7 +99,9 @@ export default function ProductDetailsPage() {
         </section>
 
         <section className="bg-white rounded-3xl shadow-lg p-8">
-          <ProductReviews reviews={product.reviews} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProductReviews reviews={product.reviews} />
+          </Suspense>
         </section>
 
         <div>

@@ -23,7 +23,7 @@ export default function CheckoutForm({
   onShippingAddressChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onPhoneNumberChange: (value: string) => void;
-  onSubmit: (event: SubmitEvent) => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }) {
   return (
     <form onSubmit={onSubmit} className="space-y-6">

@@ -1,9 +1,9 @@
-import { useContext } from "react";
+import { lazy, Suspense, useContext } from "react";
 import { CartContext } from "@/contexts/CartContext";
 import useProducts from "@/hooks/useProducts";
-import TopRatedProducts from "@/components/home/TopRatedProducts";
-import ShopByCategory from "@/components/home/ShopByCategory";
 import Link from "next/link";
+const TopRatedProducts = lazy(() => import("@/components/home/TopRatedProducts"));
+const ShopByCategory = lazy(() => import("@/components/home/ShopByCategory"));
 
 export default function HomePage() {
   const { handleCartAdd, handleCartRemove } = useContext(CartContext);
@@ -56,13 +56,18 @@ export default function HomePage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-8 py-12 space-y-12">
-        <TopRatedProducts
-          products={products}
-          handleCartAdd={handleCartAdd}
-          handleCartRemove={handleCartRemove}
-        />
+        <Suspense fallback={<div>Loading...</div>}>
+          <TopRatedProducts
+            products={products}
+            handleCartAdd={handleCartAdd}
+            handleCartRemove={handleCartRemove}
+          />
+        </Suspense>
 
-        <ShopByCategory products={products} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ShopByCategory products={products} />
+        </Suspense>
+
       </div>
     </div>
   );

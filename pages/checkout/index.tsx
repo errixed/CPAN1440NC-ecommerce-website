@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, lazy, Suspense } from "react";
 import { CartContext } from "@/contexts/CartContext";
 import { useRouter } from "next/router";
 import Modal from "react-modal";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
-import OrderSuccessModal from "@/components/checkout/OrderSuccessModal";
 import validateCheckoutForm from "@/utils/validateCheckoutForm";
+const OrderSuccessModal = lazy(() => import("@/components/checkout/OrderSuccessModal"))
 
 export default function CheckoutPage() {
   const { cartProducts, setCartProducts } = useContext(CartContext);
@@ -31,7 +31,7 @@ export default function CheckoutPage() {
     return total + product.price;
   }, 0);
 
-  function handleCompleteOrder(event: SubmitEvent) {
+  function handleCompleteOrder(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const newErrors = validateCheckoutForm({
@@ -137,10 +137,13 @@ export default function CheckoutPage() {
           </button>
         </div>
 
-        <OrderSuccessModal
-          isOpen={isSuccessModalOpen}
-          onClose={handleCloseModal}
-        />
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <OrderSuccessModal
+            isOpen={isSuccessModalOpen}
+            onClose={handleCloseModal}
+          />
+        </Suspense>
       </div>
     </div>
   );

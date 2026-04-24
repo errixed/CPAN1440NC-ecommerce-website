@@ -2,6 +2,7 @@ import { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import CartButton from "@/components/cart/CartButton";
+import styles from "@/styles/ProductCard.module.css"
 
 export default function ProductCard({
     product,
@@ -12,8 +13,10 @@ export default function ProductCard({
     handleCartAdd: (product: Product) => void;
     handleCartRemove: (product: Product) => void;
 }) {
+    const shouldScrollTitle = product.title.length > 28;
+
     return (
-        <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-md hover:shadow-xl transition space-y-4">
+        <div className="w-full min-w-0 bg-white border border-slate-200 rounded-3xl p-4 shadow-md hover:shadow-xl transition space-y-4 overflow-hidden">
             <div className="bg-slate-100 rounded-2xl p-4 flex justify-center">
                 <Image
                     src={product.thumbnail}
@@ -24,13 +27,25 @@ export default function ProductCard({
                 />
             </div>
 
-            <div className="space-y-2">
-                <Link
-                    href={`/product-details/${product.id}`}
-                    className="block text-lg font-semibold text-slate-900 hover:text-orange-500 transition"
-                >
-                    {product.title}
-                </Link>
+            <div className="space-y-2 min-w-0">
+                <div className="w-full overflow-hidden">
+                    <Link
+                        href={`/product-details/${product.id}`}
+                        className="block text-lg font-semibold text-slate-900 hover:text-orange-500 transition"
+                    >
+                        {shouldScrollTitle ? (
+                            <div className="w-full overflow-hidden whitespace-nowrap">
+                                <span className={styles.marquee}>
+                                    {product.title}
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="block truncate">
+                                {product.title}
+                            </span>
+                        )}
+                    </Link>
+                </div>
 
                 <p className="text-2xl font-bold text-slate-900">
                     ${product.price.toFixed(2)}

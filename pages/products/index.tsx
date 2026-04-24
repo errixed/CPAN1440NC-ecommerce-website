@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { CartContext } from "@/contexts/CartContext";
 import useProducts from "@/hooks/useProducts";
@@ -11,7 +11,11 @@ export default function ProductsPage() {
     const router = useRouter();
     const { handleCartAdd, handleCartRemove } = useContext(CartContext);
     const { products, loading } = useProducts();
+
     const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const itemsPerPage = 8;
 
     const selectedCategory =
         typeof router.query.category === "string"
@@ -23,7 +27,22 @@ export default function ProductsPage() {
         ...new Set(products.map((product) => product.category)),
     ];
 
-    const filterProducts = getFilterProducts({ products, selectedCategory, searchTerm });
+    const filterProducts = getFilterProducts({
+        products,
+        selectedCategory,
+        searchTerm,
+    });
+
+    const totalPages = Math.ceil(filterProducts.length / itemsPerPage);
+
+    const paginatedProducts = filterProducts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     function handleCategoryChange(category: string) {
         if (category === "all") {
@@ -32,6 +51,10 @@ export default function ProductsPage() {
             router.push(`/products?category=${category}`);
         }
     }
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedCategory, searchTerm]);
 
     if (loading) {
         return (
@@ -87,10 +110,25 @@ export default function ProductsPage() {
                     </div>
 
                     <ProductsList
-                        products={filterProducts}
+                        products={paginatedProducts}
                         handleCartAdd={handleCartAdd}
                         handleCartRemove={handleCartRemove}
                     />
+
+                    <div className="flex flex-wrap justify-center gap-2 pt-6">
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => handlePageChange(i + 1)}
+                                className={`px-4 py-2 rounded-full text-sm transition ${currentPage === i + 1
+                                        ? "bg-slate-900 text-white"
+                                        : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                                    }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
                 </section>
             </div>
         </div>
